@@ -9,12 +9,16 @@ import java.nio.file.Path;
 @Configuration
 public class UploadResourceConfig implements WebMvcConfigurer {
 
-    private static final Path UPLOAD_DIRECTORY =
+    private static final Path CATEGORY_UPLOAD_DIRECTORY =
             Path.of("uploads", "categories").toAbsolutePath().normalize();
+    private static final Path USER_UPLOAD_DIRECTORY =
+            Path.of("uploads", "users").toAbsolutePath().normalize();
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/categories/**")
-                .addResourceLocations(UPLOAD_DIRECTORY.toUri().toString());
+                .addResourceLocations(CATEGORY_UPLOAD_DIRECTORY.toUri().toString());
+        registry.addResourceHandler("/uploads/users/**")
+                .addResourceLocations(USER_UPLOAD_DIRECTORY.toUri().toString());
     }
 }

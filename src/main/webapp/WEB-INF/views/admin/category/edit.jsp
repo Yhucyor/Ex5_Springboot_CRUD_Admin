@@ -9,6 +9,10 @@
 </head>
 <body>
 
+<div class="admin-layout">
+<%@ include file="/WEB-INF/commons/admin/sidebar.jsp" %>
+<main class="admin-content">
+
 <h1>Edit Category</h1>
 
 <form method="post"
@@ -78,5 +82,7 @@
 
 </form>
 
+</main>
+</div>
 </body>
 </html>

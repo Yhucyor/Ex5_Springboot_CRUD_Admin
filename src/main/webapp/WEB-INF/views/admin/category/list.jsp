@@ -16,6 +16,10 @@
 </head>
 <body>
 
+<div class="admin-layout">
+<%@ include file="/WEB-INF/commons/admin/sidebar.jsp" %>
+<main class="admin-content">
+
 <h1>Category Management</h1>
 
 <a href="${pageContext.request.contextPath}/admin/categories/add">Add Category</a>
@@ -99,5 +103,7 @@
     </p>
 </c:if>
 
+</main>
+</div>
 </body>
 </html>
