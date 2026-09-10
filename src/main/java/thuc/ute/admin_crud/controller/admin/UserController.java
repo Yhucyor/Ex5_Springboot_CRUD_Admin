@@ -54,10 +54,19 @@ public class UserController {
 
             @RequestParam(
                     name = "size"
-            ) Optional<Integer> size) {
+            ) Optional<Integer> size,
 
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+            @RequestParam(name = "roleId", required = false)
+            Optional<Integer> roleId,
+
+            @RequestParam(name = "active", required = false)
+            Optional<Boolean> active) {
+
+        int currentPage = Math.max(1, page.orElse(1));
+        int pageSize = sanitizePageSize(size.orElse(5));
+        String searchKeyword = keyword == null ? "" : keyword.trim();
+        Integer selectedRoleId = roleId.filter(value -> value >= 1 && value <= 3).orElse(null);
+        Boolean selectedActive = active.orElse(null);
 
         Pageable pageable = PageRequest.of(
                 currentPage - 1,
@@ -65,25 +74,12 @@ public class UserController {
                 Sort.by("username").ascending()
         );
 
-        Page<User> resultPage;
-
-        if (StringUtils.hasText(keyword)) {
-
-            resultPage =
-                    userService
-                            .findByUsernameContainingOrFullnameContaining(
-                                    keyword,
-                                    keyword,
-                                    pageable
-                            );
-
-            model.addAttribute("keyword", keyword);
-
-        } else {
-
-            resultPage =
-                    userService.findAll(pageable);
-        }
+        Page<User> resultPage = userService.search(
+                searchKeyword,
+                selectedRoleId,
+                selectedActive,
+                pageable
+        );
 
         int totalPages =
                 resultPage.getTotalPages();
@@ -118,6 +114,9 @@ public class UserController {
                 "userPage",
                 resultPage
         );
+        model.addAttribute("keyword", searchKeyword);
+        model.addAttribute("roleId", selectedRoleId);
+        model.addAttribute("active", selectedActive);
 
         return "admin/user/list";
     }
@@ -277,5 +276,11 @@ public class UserController {
                 StandardCopyOption.REPLACE_EXISTING);
 
         return "/uploads/users/" + filename;
+    }
+
+    private int sanitizePageSize(int requestedSize) {
+        return List.of(3, 5, 10, 15, 20).contains(requestedSize)
+                ? requestedSize
+                : 5;
     }
 }

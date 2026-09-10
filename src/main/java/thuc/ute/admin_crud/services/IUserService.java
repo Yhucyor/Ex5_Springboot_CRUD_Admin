@@ -30,4 +30,11 @@ public interface IUserService {
             String fullname,
             Pageable pageable
     );
+
+    Page<User> search(
+            String keyword,
+            Integer roleId,
+            Boolean active,
+            Pageable pageable
+    );
 }

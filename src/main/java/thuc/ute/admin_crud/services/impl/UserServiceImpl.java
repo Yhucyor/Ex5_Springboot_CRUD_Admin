@@ -74,4 +74,14 @@ public class UserServiceImpl implements IUserService {
                         pageable
                 );
     }
+
+    @Override
+    public Page<User> search(
+            String keyword,
+            Integer roleId,
+            Boolean active,
+            Pageable pageable) {
+
+        return userRepository.search(keyword, roleId, active, pageable);
+    }
 }
